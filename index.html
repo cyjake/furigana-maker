@@ -1,0 +1,412 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>振り仮名</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/webp" href="favicon.webp">
+</head>
+<body>
+<div id="content-container">
+    <div id="content-card" style="position:relative;">
+        <div id="content">
+            <ruby>国境<rt>こっきょう</rt></ruby>の<ruby>長<rt>なが</rt></ruby>いトンネルを<ruby>抜<rt>ぬ</rt></ruby>けると<ruby>雪国<rt>ゆきくに</rt></ruby>であった。<ruby>夜<rt>よる</rt></ruby>の<ruby>底<rt>そこ</rt></ruby>が<ruby>白<rt>ひろ</rt></ruby>くなった。<ruby>信号所<rt>しんごうしょ</rt></ruby>に<ruby>汽車<rt>きしゃ</ruby>が<ruby>止<rt>と</rt></ruby>まった。
+        </div>
+        <button id="edit-content-btn" title="Edit" style="position:absolute;left:10px;bottom:10px;padding:0.5em 0.7em;border:none;background:#f7f7fa;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b27070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+        </button>
+    </div>
+</div>
+
+<div id="controls">
+    <fieldset>
+        <legend>Content Settings</legend>
+        <div class="control-row"><label for="content-ratio">Width/Height Ratio:</label>
+            <select id="content-ratio">
+                <option value="3/4">3:4</option>
+                <option value="2/3">2:3</option>
+                <option value="4/5">4:5</option>
+                <option value="1/1">1:1</option>
+            </select>
+        </div>
+        <div class="control-row"><label for="content-font-family">Font family:</label>
+            <select id="content-font-family">
+                <option value="sans-serif">Sans-serif (default)</option>
+                <option value="serif">Serif</option>
+                <option value="'Hiragino Sans', 'Noto Sans', 'Noto Sans CJK JP', 'Noto Sans JP', 'Yu Gothic', 'Meiryo', 'MS PGothic', sans-serif">Hiragino Sans / Noto Sans (CJK)</option>
+                <option value="'Hiragino Mincho Pro', 'Noto Serif', 'Noto Serif CJK JP', 'Noto Serif JP', 'Yu Mincho', 'MS Mincho', serif">Hiragino Mincho / Noto Serif (CJK)</option>
+                <option value="system-ui, sans-serif">System UI</option>
+            </select>
+        </div>
+        <div class="control-row"><label for="content-font-size">Font size:</label> <input type="number" id="content-font-size" value="42" min="10" max="200"> <span>px</span></div>
+        <div class="control-row"><label for="content-color">Color:</label> <input type="color" id="content-color" value="#b27070"></div>
+        <div class="control-row"><label for="content-line-height">Line height:</label> <input type="number" id="content-line-height" value="2.5" step="0.1" min="1" max="5"></div>
+        <div class="control-row"><label for="content-padding">Padding:</label> <input type="number" id="content-padding" value="1" min="0" max="10"> <span>em</span></div>
+            <div class="control-row"><label for="content-bg">Background:</label> <input type="color" id="content-bg" value="#fcfcfc"></div>
+
+    </fieldset>
+    <fieldset>
+        <legend>Ruby (rt) Settings</legend>
+        <div class="control-row"><label for="rt-opacity">Opacity:</label> <input type="range" id="rt-opacity" min="0" max="100" value="40"> <span>%</span></div>
+        <div class="control-row"><label for="rt-color">Color:</label> <input type="color" id="rt-color" value="#000000"></div>
+        <div class="control-row"><label for="rt-font-size">Font size:</label> <input type="range" id="rt-font-size" value="40" min="10" max="100"> <span id="rt-font-size-value">40</span> <span>%</span></div>
+    </fieldset>
+</div>
+</body>
+<style>
+#controls {
+    background: #f7f7fa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2em 1.5em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    justify-content: flex-start;
+}
+#controls fieldset {
+    border: none;
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 0;
+    padding: 1.2em 1.2em 0.7em 1.2em;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    flex: 1 1 320px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+#controls legend {
+    font-weight: bold;
+    color: #4a4a6a;
+    font-size: 1.13em;
+    margin-bottom: 0.7em;
+    letter-spacing: 0.02em;
+}
+#controls .control-row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto auto;
+    align-items: center;
+    padding: 0.2em 0;
+}
+#controls label {
+    text-align: right;
+    color: #444;
+    font-size: 1em;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-right: 1em;
+}
+#controls input[type="number"],
+#controls input[type="color"],
+#controls input[type="range"] {
+    border: 1px solid #d0d0e0;
+    border-radius: 6px;
+    padding: 0.3em 0.6em;
+    font-size: 1em;
+    background: #fafaff;
+    transition: border-color 0.2s;
+    margin-right: 0.2em;
+}
+#controls input[type="number"]:focus,
+#controls input[type="color"]:focus,
+#controls input[type="range"]:focus {
+    border-color: #7a7ad6;
+    outline: none;
+}
+#controls input[type="range"] {
+    width: 120px;
+    accent-color: #7a7ad6;
+}
+#controls input[type="color"] {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+}
+#controls span {
+    color: #888;
+    font-size: 0.97em;
+    margin-left: 0.2em;
+}
+html, body {
+    height: 100%;
+}
+body {
+    font-family: sans-serif;
+    max-width: 780px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+#content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+#content {
+    max-width: 600px;
+    max-height: 100%;
+    writing-mode: vertical-rl;
+    font-size: 42px;
+    line-height: 2.5;
+    color: #233;
+    padding: 1em;
+    background: #fcfcfc;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    text-underline-offset: 50%;
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-decoration-style: dotted;
+    text-decoration-skip-ink: auto;
+    text-decoration-color: rgb(226, 220, 220);
+    align-content: center;
+}
+rt {
+    opacity: 40%;
+}
+@media screen and (min-width: 768px) {
+    body {
+        flex-direction: row;
+        max-width: initial;
+    }
+    #content-container {
+        width: auto;
+    }
+    #controls {
+        margin-bottom: 0;
+        flex-direction: column;
+        border-radius: 0;
+    }
+}
+</style>
+
+<script>
+// Edit button triggers text edit mode (same as double-click)
+document.getElementById('edit-content-btn').addEventListener('click', function(e) {
+    // Prevent double overlay
+    if (overlayTextarea) return;
+    // Simulate double-click logic
+    const dblClickEvent = new Event('dblclick');
+    contentDiv.dispatchEvent(dblClickEvent);
+});
+// --- Contenteditable and textarea overlay logic ---
+const contentDiv = document.getElementById('content');
+let overlayTextarea = null;
+
+contentDiv.addEventListener('click', function(e) {
+    if (!contentDiv.isContentEditable) {
+        contentDiv.contentEditable = 'true';
+        contentDiv.focus();
+    }
+});
+
+contentDiv.addEventListener('blur', function(e) {
+    contentDiv.contentEditable = 'false';
+});
+
+contentDiv.addEventListener('dblclick', function(e) {
+    if (overlayTextarea) return;
+    // Create overlay textarea
+    overlayTextarea = document.createElement('textarea');
+    // Remove ruby tags, keep only original text
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = contentDiv.innerHTML;
+    tempDiv.querySelectorAll('rt').forEach(rt => rt.remove());
+    tempDiv.querySelectorAll('ruby').forEach(ruby => {
+        const text = ruby.textContent;
+        ruby.replaceWith(document.createTextNode(text));
+    });
+    overlayTextarea.value = tempDiv.textContent.replace(/\n/g, '\n');
+    overlayTextarea.style.position = 'absolute';
+    overlayTextarea.style.left = 0;
+    overlayTextarea.style.top = 0;
+    overlayTextarea.style.width = '100%';
+    overlayTextarea.style.height = '100%';
+    overlayTextarea.style.zIndex = 1000;
+    overlayTextarea.style.fontSize = contentDiv.style.fontSize || '42px';
+    overlayTextarea.style.fontFamily = contentDiv.style.fontFamily || 'sans-serif';
+    overlayTextarea.style.lineHeight = contentDiv.style.lineHeight || '2.5';
+    overlayTextarea.style.background = '#fffbe8';
+    overlayTextarea.style.border = '2px solid #b27070';
+    overlayTextarea.style.borderRadius = '8px';
+    overlayTextarea.style.padding = '1em';
+    overlayTextarea.style.boxSizing = 'border-box';
+    overlayTextarea.style.resize = 'none';
+    overlayTextarea.style.overflow = 'auto';
+    overlayTextarea.style.textAlign = 'left';
+    overlayTextarea.style.writingMode = contentDiv.style.writingMode || 'vertical-rl';
+    overlayTextarea.setAttribute('rows', '6');
+    overlayTextarea.setAttribute('cols', '40');
+    contentDiv.style.position = 'relative';
+    contentDiv.appendChild(overlayTextarea);
+    overlayTextarea.focus();
+
+    // When textarea loses focus or Enter is pressed, update #content and remove overlay
+    async function finishEdit() {
+        const rawText = overlayTextarea.value;
+        // Generate ruby HTML for Japanese text
+        contentDiv.innerHTML = await generateRubyHtmlFromJapanese(rawText);
+        contentDiv.contentEditable = 'false';
+        try {
+            contentDiv.removeChild(overlayTextarea);
+        } catch (err) {
+            // Ignored
+        }
+        overlayTextarea = null;
+
+    }
+    overlayTextarea.addEventListener('blur', finishEdit);
+    overlayTextarea.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter' && !ev.shiftKey) {
+            ev.preventDefault();
+            finishEdit();
+        }
+    });
+});
+    const kanjiDict = {};
+
+    async function fetchFurigana(word) {
+        if (Object.keys(kanjiDict).length === 0) {
+            // Load the compact dictionary
+            const data = await fetch('kanji_to_hiragana.json').then(res => res.json());
+            Object.assign(kanjiDict, data);
+        }
+        if (kanjiDict[word]) {
+            return kanjiDict[word][0];
+        }
+    }
+
+    // To split into runs of the same type:
+    function splitByScript(text) {
+        return text.match(/([\u4E00-\u9FFF]+|[\u3040-\u309F]+|[\u30A0-\u30FF]+|[^\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF]+)/g);
+    }
+
+    async function generateRubyHtmlFromJapanese(text) {
+        // Split text into words (simple split by space/punctuation)
+        // For demo, split by Japanese full-width space, comma, period, etc.
+        const segments = splitByScript(text);
+        let html = '';
+        for (const segment of segments) {
+            if (/[一-龯]/.test(segment)) {
+                // Kanji detected
+                const reading = await fetchFurigana(segment);
+                if (reading) {
+                    html += `<ruby>${segment}<rt>${reading}</rt></ruby>`;
+                } else {
+                    for (const chr of segment.split('')) {
+                        const charReading = await fetchFurigana(chr);
+                        if (charReading) {
+                            html += `<ruby>${chr}<rt>${charReading}</rt></ruby>`;
+                        } else {
+                            html += chr;
+                        }
+                    }
+                }
+            } else {
+                html += segment;
+            }
+        }
+        return html;
+    }
+
+    function syncSettingsToUrl() {
+    const params = new URLSearchParams(window.location.search);
+    params.set('ratio', document.getElementById('content-ratio').value);
+    params.set('fontFamily', document.getElementById('content-font-family').value);
+    params.set('fontSize', document.getElementById('content-font-size').value);
+    params.set('color', document.getElementById('content-color').value);
+    params.set('lineHeight', document.getElementById('content-line-height').value);
+    params.set('padding', document.getElementById('content-padding').value);
+    params.set('bg', document.getElementById('content-bg').value);
+    params.set('rtOpacity', document.getElementById('rt-opacity').value);
+    params.set('rtColor', document.getElementById('rt-color').value);
+    params.set('rtFontSize', document.getElementById('rt-font-size').value);
+    history.replaceState(null, '', '?' + params.toString());
+    }
+
+    async function restoreSettingsFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('ratio')) document.getElementById('content-ratio').value = params.get('ratio');
+        if (params.has('fontFamily')) document.getElementById('content-font-family').value = params.get('fontFamily');
+        if (params.has('fontSize')) document.getElementById('content-font-size').value = params.get('fontSize');
+        if (params.has('color')) document.getElementById('content-color').value = params.get('color');
+        if (params.has('lineHeight')) document.getElementById('content-line-height').value = params.get('lineHeight');
+        if (params.has('padding')) document.getElementById('content-padding').value = params.get('padding');
+        if (params.has('bg')) document.getElementById('content-bg').value = params.get('bg');
+        if (params.has('rtOpacity')) document.getElementById('rt-opacity').value = params.get('rtOpacity');
+        if (params.has('rtColor')) document.getElementById('rt-color').value = params.get('rtColor');
+        if (params.has('rtFontSize')) {
+            document.getElementById('rt-font-size').value = params.get('rtFontSize');
+            document.getElementById('rt-font-size-value').textContent = params.get('rtFontSize');
+        }
+        if (params.has('content')) {
+            const rawContent = decodeURIComponent(params.get('content'));
+            // Try to generate ruby HTML for Japanese text
+            document.getElementById('content').innerHTML = await generateRubyHtmlFromJapanese(rawContent);
+        }
+    }
+
+
+    function updateContentStyle() {
+        const content = document.getElementById('content');
+        content.style.fontSize = document.getElementById('content-font-size').value + 'px';
+        content.style.color = document.getElementById('content-color').value;
+        content.style.lineHeight = document.getElementById('content-line-height').value;
+        content.style.padding = document.getElementById('content-padding').value + 'em';
+        content.style.background = document.getElementById('content-bg').value;
+        content.style.fontFamily = document.getElementById('content-font-family').value;
+    }
+
+    function updateContentRatio() {
+        const ratio = document.getElementById('content-ratio').value;
+        content.style.aspectRatio = ratio;
+    }
+
+    function updateRtStyle() {
+        const rts = document.querySelectorAll('#content rt');
+        const opacity = document.getElementById('rt-opacity').value;
+        const color = document.getElementById('rt-color').value;
+        const fontSize = document.getElementById('rt-font-size').value;
+        rts.forEach(rt => {
+            rt.style.opacity = (opacity/100).toString();
+            rt.style.color = color;
+            rt.style.fontSize = fontSize + '%';
+        });
+    }
+
+
+    function updateAllAndSync() {
+        updateContentStyle();
+        updateRtStyle();
+        updateContentRatio();
+        syncSettingsToUrl();
+    }
+
+    document.getElementById('content-font-size').addEventListener('input', updateAllAndSync);
+    document.getElementById('content-color').addEventListener('input', updateAllAndSync);
+    document.getElementById('content-line-height').addEventListener('input', updateAllAndSync);
+    document.getElementById('content-padding').addEventListener('input', updateAllAndSync);
+    document.getElementById('content-bg').addEventListener('input', updateAllAndSync);
+    document.getElementById('content-font-family').addEventListener('change', updateAllAndSync);
+    document.getElementById('content-ratio').addEventListener('change', updateAllAndSync);
+
+    document.getElementById('rt-opacity').addEventListener('input', updateAllAndSync);
+    document.getElementById('rt-color').addEventListener('input', updateAllAndSync);
+    const rtFontSizeInput = document.getElementById('rt-font-size');
+    const rtFontSizeValue = document.getElementById('rt-font-size-value');
+    rtFontSizeInput.addEventListener('input', function() {
+        rtFontSizeValue.textContent = rtFontSizeInput.value;
+        updateAllAndSync();
+    });
+
+    window.onload = function() {
+        restoreSettingsFromUrl().then(updateAllAndSync);
+    };
+</script>
+</body>
