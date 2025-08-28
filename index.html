@@ -18,6 +18,9 @@
 </div>
 
 <div id="controls">
+    <button id="toggle-controls-btn" title="Collapse controls" style="position:absolute;top:8px;right:8px;padding:0.4em 0.7em;border:none;background:#e7e7f7;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;">
+        <svg id="toggle-controls-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a4a6a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
     <fieldset>
         <legend>Content Settings</legend>
         <div class="control-row"><label for="content-ratio">Width/Height Ratio:</label>
@@ -53,6 +56,9 @@
 </div>
 </body>
 <style>
+#controls {
+    position: relative;
+}
 #controls {
     background: #f7f7fa;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
@@ -148,7 +154,7 @@ body {
     overflow-y: auto;
 }
 #content {
-    max-width: 600px;
+    max-width: min(600px, 100vw);
     max-height: 100%;
     writing-mode: vertical-rl;
     font-size: 42px;
@@ -184,9 +190,40 @@ rt {
         border-radius: 0;
     }
 }
+@media screen and (max-width: 767px) {
+    #controls {
+        max-height: 45%;
+        overflow-y: auto;
+    }
+}
 </style>
 
 <script>
+// Collapse/expand controls logic
+const controlsDiv = document.getElementById('controls');
+const toggleBtn = document.getElementById('toggle-controls-btn');
+const toggleIcon = document.getElementById('toggle-controls-icon');
+let controlsCollapsed = false;
+toggleBtn.addEventListener('click', function() {
+    controlsCollapsed = !controlsCollapsed;
+    if (controlsCollapsed) {
+        controlsDiv.style.maxHeight = '40px';
+        controlsDiv.style.overflow = 'hidden';
+        Array.from(controlsDiv.children).forEach(child => {
+            if (child !== toggleBtn) child.style.display = 'none';
+        });
+        toggleBtn.title = 'Expand controls';
+        toggleIcon.innerHTML = '<polyline points="18 15 12 9 6 15"/>';
+    } else {
+        controlsDiv.style.maxHeight = '';
+        controlsDiv.style.overflow = '';
+        Array.from(controlsDiv.children).forEach(child => {
+            if (child !== toggleBtn) child.style.display = '';
+        });
+        toggleBtn.title = 'Collapse controls';
+        toggleIcon.innerHTML = '<polyline points="6 9 12 15 18 9"/>';
+    }
+});
 // Edit button triggers text edit mode (same as double-click)
 document.getElementById('edit-content-btn').addEventListener('click', function(e) {
     // Prevent double overlay
