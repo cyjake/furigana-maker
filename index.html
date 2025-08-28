@@ -58,6 +58,7 @@
 <style>
 #controls {
     position: relative;
+    box-sizing: border-box;
 }
 #controls {
     background: #f7f7fa;
@@ -193,6 +194,7 @@ rt {
 @media screen and (max-width: 767px) {
     #controls {
         max-height: 45%;
+        overflow-x: hidden;
         overflow-y: auto;
     }
 }
@@ -237,6 +239,7 @@ const contentDiv = document.getElementById('content');
 let overlayTextarea = null;
 
 contentDiv.addEventListener('click', function(e) {
+    if (overlayTextarea) return;
     if (!contentDiv.isContentEditable) {
         contentDiv.contentEditable = 'true';
         contentDiv.focus();
