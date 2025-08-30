@@ -1,0 +1,174 @@
+/* Extracted from index.html */
+#content {
+    max-width: min(600px, 100vw);
+    max-height: 100%;
+    writing-mode: vertical-rl;
+    font-size: 42px;
+    line-height: 2.5;
+    color: #233;
+    padding: 1em;
+    background: #fcfcfc;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    text-underline-offset: 50%;
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-decoration-style: dotted;
+    text-decoration-skip-ink: auto;
+    text-decoration-color: rgb(226, 220, 220);
+    align-content: center;
+    cursor: default;
+}
+ruby.active-pron {
+    background: rgba(255, 255, 0, 0.35);
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+ruby:hover, .okurigana:hover, .okurigana-group:hover {
+    background: #ffe6e6;
+    transition: background 0.2s;
+}
+#controls {
+    position: relative;
+    box-sizing: border-box;
+}
+#controls {
+    background: #f7f7fa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2em 1.5em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    justify-content: flex-start;
+}
+#controls fieldset {
+    border: none;
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 0;
+    padding: 1.2em 1.2em 0.7em 1.2em;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    flex: 1 1 320px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+#controls legend {
+    font-weight: bold;
+    color: #4a4a6a;
+    font-size: 1.13em;
+    margin-bottom: 0.7em;
+    letter-spacing: 0.02em;
+}
+#controls .control-row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto auto;
+    align-items: center;
+    padding: 0.2em 0;
+}
+#controls label {
+    text-align: right;
+    color: #444;
+    font-size: 1em;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-right: 1em;
+}
+#controls input[type="number"],
+#controls input[type="color"],
+#controls input[type="range"] {
+    border: 1px solid #d0d0e0;
+    border-radius: 6px;
+    padding: 0.3em 0.6em;
+    font-size: 1em;
+    background: #fafaff;
+    transition: border-color 0.2s;
+    margin-right: 0.2em;
+}
+#controls input[type="number"]:focus,
+#controls input[type="color"]:focus,
+#controls input[type="range"]:focus {
+    border-color: #7a7ad6;
+    outline: none;
+}
+#controls input[type="range"] {
+    width: 120px;
+    accent-color: #7a7ad6;
+}
+#controls input[type="color"] {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+}
+#controls span {
+    color: #888;
+    font-size: 0.97em;
+    margin-left: 0.2em;
+}
+html, body {
+    height: 100%;
+}
+body {
+    font-family: sans-serif;
+    max-width: 780px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+#content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+#content {
+    max-width: min(600px, 100vw);
+    max-height: 100%;
+    writing-mode: vertical-rl;
+    font-size: 42px;
+    line-height: 2.5;
+    color: #233;
+    padding: 1em;
+    background: #fcfcfc;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    text-underline-offset: 50%;
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-decoration-style: dotted;
+    text-decoration-skip-ink: auto;
+    text-decoration-color: rgb(226, 220, 220);
+    align-content: center;
+    cursor: default;
+}
+rt {
+    opacity: 40%;
+}
+@media screen and (min-width: 768px) {
+    body {
+        flex-direction: row;
+        max-width: initial;
+    }
+    #content-container {
+        width: auto;
+    }
+    #controls {
+        margin-bottom: 0;
+        flex-direction: column;
+        border-radius: 0;
+    }
+}
+@media screen and (max-width: 767px) {
+    #controls {
+        max-height: 45%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+}

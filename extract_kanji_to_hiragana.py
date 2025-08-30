@@ -5,11 +5,23 @@ import re
 JMDICT_PATH = "jmdict-eng-3.6.1.json"
 OUTPUT_PATH = "kanji_to_hiragana.json"
 
-# Helper: check if a string is all kanji
-KANJI_RE = re.compile(r'^[\u4e00-\u9fff]+$')
+# Regular expressions for matching kanji and kana characters
+KANJI_RE = re.compile(r'[\u4e00-\u9fff]')
+KANA_RE = re.compile(r'[\u3040-\u309F\u30A0-\u30FF]')
 
-def is_kanji(word):
-    return bool(KANJI_RE.match(word))
+# Helper: check if a string contains any kanji
+def has_kanji(word):
+    return bool(KANJI_RE.search(word))
+
+# Helper: pure kanji word (all chars are kanji)
+def is_pure_kanji(word):
+    return bool(word) and all(KANJI_RE.match(ch) for ch in word)
+
+# Helper: okurigana word (starts with kanji, ends with kana, contains both)
+def is_okurigana(word):
+    if not word:
+        return False
+    return KANJI_RE.match(word[0]) and KANA_RE.match(word[-1]) and any(KANA_RE.match(ch) for ch in word)
 
 def main():
     print("Loading JMdict...")
@@ -25,10 +37,13 @@ def main():
         hiragana_readings = [k.get("text") for k in kana_list if k.get("text") and all('ぁ' <= ch <= 'ん' or ch == 'ー' for ch in k.get("text"))]
         for kanji in kanji_list:
             kanji_text = kanji.get("text") if isinstance(kanji, dict) else kanji
-            if kanji_text and is_kanji(kanji_text):
-                if kanji_text not in kanji_to_hiragana:
-                    kanji_to_hiragana[kanji_text] = []
+            if not kanji_text:
+                continue
+            # Only keep pure kanji words and okurigana words
+            if is_pure_kanji(kanji_text) or is_okurigana(kanji_text):
                 for reading in hiragana_readings:
+                    if kanji_text not in kanji_to_hiragana:
+                        kanji_to_hiragana[kanji_text] = []
                     if reading not in kanji_to_hiragana[kanji_text]:
                         kanji_to_hiragana[kanji_text].append(reading)
 
@@ -39,6 +54,9 @@ def main():
     for entry in kanjidic.get("characters", []):
         kanji = entry.get("literal")
         if not kanji or kanji in kanji_to_hiragana:
+            continue
+        # Only keep pure kanji words
+        if not is_pure_kanji(kanji):
             continue
         if not entry.get('readingMeaning'):
             continue
