@@ -1,3 +1,32 @@
+.controls-collapsed {
+    max-height: 40px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+}
+.edit-content-btn, .toggle-controls-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    padding: 0.5em;
+    border: none;
+    background: #f7f7fa;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    font-size: 1.2em;
+    width: 40px;
+    height: 40px;
+}
+
+/* Specific color for edit-content-btn if needed */
+.edit-content-btn {
+    right: 8px;
+    bottom: 56px;
+}
 /* Extracted from index.html */
 #content {
     max-width: min(600px, 100vw);
@@ -19,6 +48,8 @@
     text-decoration-color: rgb(226, 220, 220);
     align-content: center;
     cursor: default;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 ruby.active-pron {
     background: rgba(255, 255, 0, 0.35);
@@ -126,6 +157,7 @@ body {
     width: 100%;
     flex-grow: 1;
     overflow-y: auto;
+    position: relative;
 }
 #content {
     max-width: min(600px, 100vw);
@@ -164,11 +196,26 @@ rt {
         flex-direction: column;
         border-radius: 0;
     }
+    #toggle-controls-icon {
+        transform: rotate(-90deg);
+        transition: transform 0.2s;
+    }
 }
 @media screen and (max-width: 767px) {
     #controls {
-        max-height: 45%;
         overflow-x: hidden;
         overflow-y: auto;
+    }
+    #content-container {
+        flex-shrink: 0;
+    }
+    #content-container[data-aspect-ratio="3/4"] {
+        aspect-ratio: 3/4;
+    }
+    #content-container[data-aspect-ratio="4/5"] {
+        aspect-ratio: 4/5;
+    }
+    #content-container[data-aspect-ratio="1/1"] {
+        aspect-ratio: 1/1;
     }
 }

@@ -64,6 +64,7 @@ function createPronunciationDropdown(triggerEl, kanjiWord, currentRt) {
         });
         triggerEl.classList.add('active-pron');
         const dropdown = document.createElement('select');
+
         dropdown.className = 'pron-dropdown';
         dropdown.style.position = 'absolute';
         dropdown.style.zIndex = 2000;
@@ -108,6 +109,78 @@ function createPronunciationDropdown(triggerEl, kanjiWord, currentRt) {
     });
 }
 
+const editBtn = document.getElementById('edit-content-btn');
+const OK_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>';
+const EDIT_ICON_SVG = editBtn.innerHTML;
+
+document.getElementById('edit-content-btn').addEventListener('click', function(e) {
+    if (overlayTextarea) {
+        // Submit change and exit edit mode
+        finishEdit();
+        e.target.innerHTML = EDIT_ICON_SVG;
+        return;
+    }
+    // Enter edit mode (simulate double-click logic)
+    const dblClickEvent = new Event('dblclick');
+    contentDiv.dispatchEvent(dblClickEvent);
+    e.target.innerHTML = OK_ICON_SVG;
+});
+
+contentDiv.addEventListener('dblclick', function(e) {
+    if (overlayTextarea) return;
+    // Create overlay textarea
+    overlayTextarea = document.createElement('textarea');
+    // Remove ruby tags, keep only original text
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = contentDiv.innerHTML;
+    tempDiv.querySelectorAll('rt').forEach(rt => rt.remove());
+    tempDiv.querySelectorAll('ruby').forEach(ruby => {
+        const text = ruby.textContent;
+        ruby.replaceWith(document.createTextNode(text));
+    });
+    overlayTextarea.value = tempDiv.textContent.replace(/\n/g, '\n').trim();
+    overlayTextarea.style.position = 'absolute';
+    overlayTextarea.style.left = 0;
+    overlayTextarea.style.top = 0;
+    overlayTextarea.style.width = '100%';
+    overlayTextarea.style.height = '100%';
+    overlayTextarea.style.zIndex = 10;
+    overlayTextarea.style.fontSize = contentDiv.style.fontSize || '42px';
+    overlayTextarea.style.fontFamily = contentDiv.style.fontFamily || 'sans-serif';
+    overlayTextarea.style.lineHeight = contentDiv.style.lineHeight || '2.5';
+    overlayTextarea.style.background = '#fffbe8';
+    overlayTextarea.style.border = '2px solid #b27070';
+    overlayTextarea.style.borderRadius = '8px';
+    overlayTextarea.style.padding = '1em';
+    overlayTextarea.style.boxSizing = 'border-box';
+    overlayTextarea.style.resize = 'none';
+    overlayTextarea.style.overflow = 'auto';
+    overlayTextarea.style.textAlign = 'left';
+    overlayTextarea.style.writingMode = contentDiv.style.writingMode || 'vertical-rl';
+    overlayTextarea.setAttribute('rows', '6');
+    overlayTextarea.setAttribute('cols', '40');
+    contentDiv.style.position = 'relative';
+    contentDiv.appendChild(overlayTextarea);
+    overlayTextarea.focus();
+
+    // Only finishEdit when user clicks the edit button again
+    finishEdit = async function() {
+        const rawText = overlayTextarea.value;
+        contentDiv.innerHTML = await generateRubyHtmlFromJapanese(rawText);
+        contentDiv.contentEditable = 'false';
+        try {
+            contentDiv.removeChild(overlayTextarea);
+        } catch (err) {}
+        overlayTextarea = null;
+    };
+    overlayTextarea.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) {
+            ev.preventDefault();
+            finishEdit();
+        }
+    });
+});
+
 contentDiv.addEventListener('click', function(e) {
     if (overlayTextarea) return;
     // Prioritize okurigana-group for pronunciation dropdown
@@ -138,6 +211,7 @@ contentDiv.addEventListener('click', function(e) {
 // --- Palette definitions ---
 function syncSettingsToUrl() {
     const params = new URLSearchParams(window.location.search);
+    params.set('palette', document.getElementById('palette').value);
     params.set('ratio', document.getElementById('content-ratio').value);
     params.set('fontFamily', document.getElementById('content-font-family').value);
     params.set('fontSize', document.getElementById('content-font-size').value);
@@ -199,6 +273,10 @@ async function generateRubyHtmlFromJapanese(text) {
 }
 async function restoreSettingsFromUrl() {
     const params = new URLSearchParams(window.location.search);
+    if (params.has('palette')) {
+        document.getElementById('palette').value = params.get('palette');
+        applyPalette(params.get('palette'));
+    }
     if (params.has('ratio')) document.getElementById('content-ratio').value = params.get('ratio');
     if (params.has('fontFamily')) document.getElementById('content-font-family').value = params.get('fontFamily');
     if (params.has('fontSize')) document.getElementById('content-font-size').value = params.get('fontSize');
@@ -214,7 +292,6 @@ async function restoreSettingsFromUrl() {
     }
     if (params.has('content')) {
         const rawContent = decodeURIComponent(params.get('content'));
-        // Try to generate ruby HTML for Japanese text
         document.getElementById('content').innerHTML = await generateRubyHtmlFromJapanese(rawContent);
     }
 }
@@ -231,6 +308,7 @@ function updateContentStyle() {
 function updateContentRatio() {
     const ratio = document.getElementById('content-ratio').value;
     contentDiv.style.aspectRatio = ratio;
+    document.getElementById('content-container').dataset.aspectRatio = ratio;
 }
 
 function updateRtStyle() {
@@ -335,6 +413,66 @@ const palettes = {
         rtFontSize: 40,
         lineHeight: 2.5,
         fontSize: 42
+    },
+    morandi: {
+        name: 'Morandi',
+        bg: '#e5e1dd',
+        fg: '#7d7a6e',
+        accent: '#b2a59b',
+        ruby: '#a3a1a8',
+        font: "'Noto Sans JP', sans-serif",
+        rtOpacity: 38,
+        rtFontSize: 38,
+        lineHeight: 2.5,
+        fontSize: 41
+    },
+    mingqing: {
+        name: 'Ming/Qing Palace',
+        bg: '#e9c46a',
+        fg: '#264653',
+        accent: '#f4a261',
+        ruby: '#e76f51',
+        font: "'Noto Serif JP', serif",
+        rtOpacity: 40,
+        rtFontSize: 40,
+        lineHeight: 2.6,
+        fontSize: 42
+    },
+    pigment: {
+        name: 'Chinese Painting Pigments',
+        bg: '#f6f5ec',
+        fg: '#7c6c5f',
+        accent: '#b7a57a',
+        ruby: '#a67c52',
+        font: "'Noto Serif JP', serif",
+        rtOpacity: 36,
+        rtFontSize: 37,
+        lineHeight: 2.5,
+        fontSize: 41
+    },
+    ukiyoe: {
+        name: 'Ukiyo-e',
+        bg: '#f7e6c7',
+        fg: '#2c363f',
+        accent: '#e07a5f',
+        ruby: '#3d405b',
+        font: "'Yu Mincho', serif",
+        rtOpacity: 39,
+        rtFontSize: 39,
+        lineHeight: 2.6,
+        fontSize: 41
+    },
+    gits: {
+        name: 'Ghost in the Shell',
+        bg: '#232946',
+        fg: '#eebbc3',
+        accent: '#b8c1ec',
+        ruby: '#ffadad',
+        font: "'Noto Sans JP', sans-serif",
+        rtOpacity: 45,
+        rtFontSize: 42,
+        lineHeight: 2.7,
+        fontSize: 43
     }
 };
 
@@ -365,6 +503,7 @@ document.getElementById('palette').addEventListener('change', function() {
     const val = this.value;
     if (val === 'custom') return;
     applyPalette(val);
+    syncSettingsToUrl();
 });
 
 // Collapse/expand controls logic
@@ -375,5 +514,36 @@ const toggleIcon = document.getElementById('toggle-controls-icon');
 document.getElementById('rt-opacity').addEventListener('input', updateAllAndSync);
 
 window.onload = function() {
+    // Dynamically generate palette options
+    const paletteSelect = document.getElementById('palette');
+    if (paletteSelect) {
+        paletteSelect.innerHTML = '';
+        Object.entries(palettes).forEach(([key, value]) => {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = value.name || key;
+            paletteSelect.appendChild(opt);
+        });
+    }
     restoreSettingsFromUrl().then(updateAllAndSync);
 };
+
+let controlsCollapsed = false;
+toggleBtn.addEventListener('click', function() {
+    controlsCollapsed = !controlsCollapsed;
+    if (controlsCollapsed) {
+        controlsDiv.classList.add('controls-collapsed');
+        Array.from(controlsDiv.children).forEach(child => {
+            if (child !== toggleBtn) child.style.display = 'none';
+        });
+        toggleBtn.title = 'Expand controls';
+        toggleIcon.innerHTML = '<polyline points="18 15 12 9 6 15"/>';
+    } else {
+        controlsDiv.classList.remove('controls-collapsed');
+        Array.from(controlsDiv.children).forEach(child => {
+            if (child !== toggleBtn) child.style.display = '';
+        });
+        toggleBtn.title = 'Collapse controls';
+        toggleIcon.innerHTML = '<polyline points="6 9 12 15 18 9"/>';
+    }
+});
