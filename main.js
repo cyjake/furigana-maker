@@ -525,6 +525,13 @@ window.onload = function() {
             paletteSelect.appendChild(opt);
         });
     }
+    // Sync writing mode from URL parameter
+    const params = new URLSearchParams(window.location.search);
+    const writingMode = params.get('writingMode');
+    if (writingMode) {
+        const content = document.getElementById('content');
+        if (content) content.style.writingMode = writingMode;
+    }
     restoreSettingsFromUrl().then(updateAllAndSync);
 };
 
@@ -547,3 +554,22 @@ toggleBtn.addEventListener('click', function() {
         toggleIcon.innerHTML = '<polyline points="6 9 12 15 18 9"/>';
     }
 });
+
+const writingModeBtn = document.getElementById('writing-mode-btn');
+if (writingModeBtn) {
+    writingModeBtn.addEventListener('click', function() {
+        const content = document.getElementById('content');
+        let newMode;
+        if (getComputedStyle(content).writingMode === 'vertical-rl') {
+            content.style.writingMode = 'horizontal-tb';
+            newMode = 'horizontal-tb';
+        } else {
+            content.style.writingMode = 'vertical-rl';
+            newMode = 'vertical-rl';
+        }
+        // Sync writing mode to URL parameters
+        const params = new URLSearchParams(window.location.search);
+        params.set('writingMode', newMode);
+        history.replaceState(null, '', '?' + params.toString());
+    });
+}
