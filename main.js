@@ -1,6 +1,7 @@
 document.getElementById('content-font-size').addEventListener('input', updateAllAndSync);
 document.getElementById('content-color').addEventListener('input', updateAllAndSync);
 document.getElementById('content-line-height').addEventListener('input', updateAllAndSync);
+document.getElementById('content-letter-spacing').addEventListener('input', updateAllAndSync);
 document.getElementById('content-padding').addEventListener('input', updateAllAndSync);
 document.getElementById('content-bg').addEventListener('input', updateAllAndSync);
 document.getElementById('rt-opacity').addEventListener('input', updateAllAndSync);
@@ -217,6 +218,7 @@ function syncSettingsToUrl() {
     params.set('fontSize', document.getElementById('content-font-size').value);
     params.set('color', document.getElementById('content-color').value);
     params.set('lineHeight', document.getElementById('content-line-height').value);
+    params.set('letterSpacing', document.getElementById('content-letter-spacing').value);
     params.set('padding', document.getElementById('content-padding').value);
     params.set('bg', document.getElementById('content-bg').value);
     params.set('rtOpacity', document.getElementById('rt-opacity').value);
@@ -282,6 +284,7 @@ async function restoreSettingsFromUrl() {
     if (params.has('fontSize')) document.getElementById('content-font-size').value = params.get('fontSize');
     if (params.has('color')) document.getElementById('content-color').value = params.get('color');
     if (params.has('lineHeight')) document.getElementById('content-line-height').value = params.get('lineHeight');
+    if (params.has('letterSpacing')) document.getElementById('content-letter-spacing').value = params.get('letterSpacing');
     if (params.has('padding')) document.getElementById('content-padding').value = params.get('padding');
     if (params.has('bg')) document.getElementById('content-bg').value = params.get('bg');
     if (params.has('rtOpacity')) document.getElementById('rt-opacity').value = params.get('rtOpacity');
@@ -300,6 +303,7 @@ function updateContentStyle() {
     content.style.fontSize = document.getElementById('content-font-size').value + 'px';
     content.style.color = document.getElementById('content-color').value;
     content.style.lineHeight = document.getElementById('content-line-height').value;
+    content.style.letterSpacing = document.getElementById('content-letter-spacing').value + 'px';
     content.style.padding = document.getElementById('content-padding').value + 'em';
     content.style.background = document.getElementById('content-bg').value;
     content.style.fontFamily = document.getElementById('content-font-family').value;

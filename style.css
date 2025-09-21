@@ -50,6 +50,7 @@
     cursor: default;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: pre-wrap;
 }
 ruby.active-pron {
     background: rgba(255, 255, 0, 0.35);
@@ -59,6 +60,9 @@ ruby.active-pron {
 ruby:hover, .okurigana:hover, .okurigana-group:hover {
     background: #ffe6e6;
     transition: background 0.2s;
+}
+rt {
+    letter-spacing: normal;
 }
 #controls {
     position: relative;
